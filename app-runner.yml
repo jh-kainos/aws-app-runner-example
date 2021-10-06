@@ -1,0 +1,54 @@
+Parameters:
+  AppRunnerServiceName:
+    Description: Name of the AWS App Runner service to deploy
+    Type: String
+    Default: aws-app-runner-example
+  
+  ECRRepositoryImage:
+    Description: URL of ECR Image
+    Type: String
+
+Resources:
+  AppRunner:
+    Type: AWS::AppRunner::Service
+    Properties:
+      ServiceName: !Ref AppRunnerServiceName
+      SourceConfiguration:
+        AuthenticationConfiguration:
+          AccessRoleArn: !GetAtt ECRAccessRole.Arn
+        AutoDeploymentsEnabled: false
+        ImageRepository:
+          ImageRepositoryType: ECR
+          ImageConfiguration:
+            Port: 8081
+          ImageIdentifier: !Ref ECRRepositoryImage
+      InstanceConfiguration:
+        Cpu: 1 vCPU
+        Memory: 2 GB
+
+
+  ECRAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          Effect: Allow
+          Principal:
+            Service:
+              - build.apprunner.amazonaws.com
+          Action:
+            - "sts:AssumeRole"
+      Policies:
+        - PolicyName: ECRAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "ecr:DescribeImages"
+                  - "ecr:GetAuthorizationToken"
+                  - "ecr:BatchCheckLayerAvailability"
+                Resource: "*"
