@@ -3,6 +3,7 @@ env:
   WORK_DIR: ./express-ts-api
   IMAGE_NAME: aws-app-runner
   AWS_ROLE_SESSION_DURATION: 900
+  AWS_ROLE_SKIP_TAGGING: true
 
 on:
   push:
@@ -20,6 +21,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-duration-seconds: ${{ env.AWS_ROLE_SESSION_DURATION }}
+          role-skip-session-tagging: ${{ env.AWS_ROLE_SKIP_TAGGING }}
       - name: Authenticate to registry
         run: aws ecr get-login-password | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPO }}
       - name: Build Docker image from Dockerfile
