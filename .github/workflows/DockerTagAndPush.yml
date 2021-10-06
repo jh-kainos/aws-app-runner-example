@@ -27,6 +27,6 @@ jobs:
       - name: Build Docker image from Dockerfile
         run: docker build -t ${{ env.IMAGE_NAME }} -f ${{ env.WORK_DIR }}/Dockerfile ${{ env.WORK_DIR }}
       - name: Build Docker image from Dockerfile
-        run: docker tag ${{ env.IMAGE_NAME }} ${{ secrets.AWS_ECR_REPO }}/${{ env.IMAGE_NAME }}
+        run: docker tag ${{ env.IMAGE_NAME }} ${{ secrets.AWS_ECR_REPO }}
       - name: Push Docker image to ECR
-        run: docker push ${{ secrets.AWS_ECR_REPO }}/${{ env.IMAGE_NAME }}
+        run: docker push ${{ secrets.AWS_ECR_REPO }}
