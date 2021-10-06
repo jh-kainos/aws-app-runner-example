@@ -2,7 +2,7 @@ name: Build, Tag and Push Docker image to ECR
 env:
   WORK_DIR: ./express-ts-api
   IMAGE_NAME: aws-app-runner
-  AWS_ROLE_SESSION_DURATION: 600
+  AWS_ROLE_SESSION_DURATION: 900
 
 on:
   push:
