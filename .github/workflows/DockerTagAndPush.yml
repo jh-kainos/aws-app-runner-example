@@ -1,0 +1,30 @@
+name: Build, Tag and Push Docker image to ECR
+env:
+  WORK_DIR: ./express-ts-api
+  IMAGE_NAME: aws-app-runner
+  AWS_ROLE_SESSION_DURATION: 600
+
+on:
+  push:
+    branches: main
+
+jobs:
+  upload-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-duration-seconds: ${{ env.AWS_ROLE_SESSION_DURATION }}
+      - name: Authenticate to registry
+        run: aws ecr get-login-password | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPO }}
+      - name: Build Docker image from Dockerfile
+        run: docker build -t ${{ env.IMAGE_NAME }} -f ${{ env.WORK_DIR }} .
+      - name: Build Docker image from Dockerfile
+        run: docker tag ${{ env.IMAGE_NAME }} ${{ secrets.AWS_ECR_REPO }}/${{ env.IMAGE_NAME }}
+      - name: Push Docker image to ECR
+        run: docker push ${{ secrets.AWS_ECR_REPO }}/${{ env.IMAGE_NAME }}
