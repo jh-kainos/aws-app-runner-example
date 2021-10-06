@@ -25,7 +25,7 @@ jobs:
       - name: Authenticate to registry
         run: aws ecr get-login-password | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPO }}
       - name: Build Docker image from Dockerfile
-        run: docker build -t ${{ env.IMAGE_NAME }} -f ${{ env.WORK_DIR }} .
+        run: docker build -t ${{ env.IMAGE_NAME }} -f ${{ env.WORK_DIR }}/Dockerfile ${{ env.WORK_DIR }}
       - name: Build Docker image from Dockerfile
         run: docker tag ${{ env.IMAGE_NAME }} ${{ secrets.AWS_ECR_REPO }}/${{ env.IMAGE_NAME }}
       - name: Push Docker image to ECR
