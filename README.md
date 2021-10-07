@@ -1,3 +1,4 @@
+[![Build, Tag and Push Docker image to ECR](https://github.com/jh-kainos/aws-app-runner-example/actions/workflows/DockerTagAndPush.yml/badge.svg)](https://github.com/jh-kainos/aws-app-runner-example/actions/workflows/DockerTagAndPush.yml)
 # aws-app-runner-example
 
 This is a basic example of how to deploy a container image to an AWS App Runner service. The API is located in the `express-ts-api` folder and was generated with `npx express-generator-typescript`.
