@@ -1,0 +1,37 @@
+Parameters:
+  ECRName:
+    Type: String
+    Description: Name of the ECR repository to create
+    Default: aws-app-runner
+
+Resources:
+  ECR:
+    Type: AWS::ECR::Repository
+    Properties:
+      EncryptionConfiguration:
+        EncryptionType: KMS
+      ImageTagMutability: MUTABLE
+      RepositoryName: !Ref ECRName
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Only keep 2 untagged images",
+                "selection": {
+                  "tagStatus": "untagged",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 2
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
+
+Outputs:
+  RepositoryURI:
+    Value: !GetAtt ECR.RepositoryUri
+    Description: URI of created repository
