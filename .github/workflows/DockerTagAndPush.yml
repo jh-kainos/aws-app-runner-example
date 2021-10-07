@@ -12,7 +12,7 @@ on:
     branches: main
 
 jobs:
-  upload-docker-image:
+  upload-docker-image-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -32,22 +32,9 @@ jobs:
         run: docker tag ${{ env.IMAGE_NAME }} ${{ secrets.AWS_ECR_REPO }}
       - name: Push Docker image to ECR
         run: docker push ${{ secrets.AWS_ECR_REPO }}
-
-  deploy-cloudformation:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-duration-seconds: ${{ env.AWS_ROLE_SESSION_DURATION }}
-          role-skip-session-tagging: ${{ env.AWS_ROLE_SKIP_TAGGING }}
       - name: Deploy AWS App Runner template
         id: app-runner-template
-        uses: aws-actions/aws-cloudformation-github-deploy@1.0.4
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.0.4
         with:
           name: ${{ env.AWS_STACK_NAME }}
           template: ${{ env.AWS_TEMPLATE_FILE }}
